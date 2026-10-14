@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E1AF2142307F621C00D92BAB /* Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = E1AF2141307F621400D92BAB /* Readme.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E1AF2125307F613700D92BAB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		E1AF2117307F613300D92BAB /* Kinovechor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kinovechor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1AF2124307F613700D92BAB /* KinovechorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KinovechorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1AF212E307F613700D92BAB /* KinovechorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KinovechorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1AF2141307F621400D92BAB /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +80,7 @@
 		E1AF210E307F613200D92BAB = {
 			isa = PBXGroup;
 			children = (
+				E1AF2141307F621400D92BAB /* Readme.md */,
 				E1AF2119307F613300D92BAB /* Kinovechor */,
 				E1AF2127307F613700D92BAB /* KinovechorTests */,
 				E1AF2131307F613700D92BAB /* KinovechorUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1AF2142307F621C00D92BAB /* Readme.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
