@@ -1,21 +1,18 @@
-//
-//  ContentView.swift
-//  Kinovechor
-//
-//  Created by Свят on 14.10.26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var authManager = AuthManager()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if authManager.isAuthenticated {
+                HomeView()
+                    .environmentObject(authManager)
+            } else {
+                AuthView()
+                    .environmentObject(authManager)
+            }
         }
-        .padding()
     }
 }
 

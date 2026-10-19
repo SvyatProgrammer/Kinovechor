@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E11481F63081111D00D80094 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = E11481F53081111D00D80094 /* FirebaseAnalytics */; };
+		E11481F930811B2C00D80094 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E11481F830811B2C00D80094 /* FirebaseAuth */; };
 		E1AF2142307F621C00D92BAB /* Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = E1AF2141307F621400D92BAB /* Readme.md */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +59,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E11481F63081111D00D80094 /* FirebaseAnalytics in Frameworks */,
+				E11481F930811B2C00D80094 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +81,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E11481F730811B2C00D80094 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E1AF210E307F613200D92BAB = {
 			isa = PBXGroup;
 			children = (
@@ -84,6 +95,7 @@
 				E1AF2119307F613300D92BAB /* Kinovechor */,
 				E1AF2127307F613700D92BAB /* KinovechorTests */,
 				E1AF2131307F613700D92BAB /* KinovechorUITests */,
+				E11481F730811B2C00D80094 /* Frameworks */,
 				E1AF2118307F613300D92BAB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -118,6 +130,8 @@
 			);
 			name = Kinovechor;
 			packageProductDependencies = (
+				E11481F53081111D00D80094 /* FirebaseAnalytics */,
+				E11481F830811B2C00D80094 /* FirebaseAuth */,
 			);
 			productName = Kinovechor;
 			productReference = E1AF2117307F613300D92BAB /* Kinovechor.app */;
@@ -201,6 +215,9 @@
 			);
 			mainGroup = E1AF210E307F613200D92BAB;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E11481F43081111D00D80094 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E1AF2118307F613300D92BAB /* Products */;
 			projectDirPath = "";
@@ -585,6 +602,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E11481F43081111D00D80094 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E11481F53081111D00D80094 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E11481F43081111D00D80094 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		E11481F830811B2C00D80094 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E11481F43081111D00D80094 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E1AF210F307F613200D92BAB /* Project object */;
 }
