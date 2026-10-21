@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		E11481F63081111D00D80094 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = E11481F53081111D00D80094 /* FirebaseAnalytics */; };
 		E11481F930811B2C00D80094 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E11481F830811B2C00D80094 /* FirebaseAuth */; };
-		E13C1AAA30875BFD00D25BE8 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = E13C1AA930875BFD00D25BE8 /* FirebaseDatabase */; };
 		E1AF2142307F621C00D92BAB /* Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = E1AF2141307F621400D92BAB /* Readme.md */; };
 /* End PBXBuildFile section */
 
@@ -60,7 +59,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E13C1AAA30875BFD00D25BE8 /* FirebaseDatabase in Frameworks */,
 				E11481F63081111D00D80094 /* FirebaseAnalytics in Frameworks */,
 				E11481F930811B2C00D80094 /* FirebaseAuth in Frameworks */,
 			);
@@ -134,7 +132,6 @@
 			packageProductDependencies = (
 				E11481F53081111D00D80094 /* FirebaseAnalytics */,
 				E11481F830811B2C00D80094 /* FirebaseAuth */,
-				E13C1AA930875BFD00D25BE8 /* FirebaseDatabase */,
 			);
 			productName = Kinovechor;
 			productReference = E1AF2117307F613300D92BAB /* Kinovechor.app */;
@@ -627,11 +624,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E11481F43081111D00D80094 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
-		};
-		E13C1AA930875BFD00D25BE8 /* FirebaseDatabase */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E11481F43081111D00D80094 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabase;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
