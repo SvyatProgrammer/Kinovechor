@@ -9,6 +9,7 @@ struct ContentView: View {
             if !authManager.isAuthenticated {
                 AuthView()
                     .environmentObject(authManager)
+                    .environmentObject(roomManager)
             } else if !roomManager.isInRoom {
                 RoomSelectionView()
                     .environmentObject(authManager)

@@ -12,52 +12,35 @@ struct HomeView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var roomManager: RoomManager
 
+    @State private var showProfile = false
+    @State private var selectedtab = 0
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Главный экран")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            
-            if let email = authManager.user?.email {
-                Text("Вы вошли как:\n\(email)")
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.secondary)
-                    .padding()
+        TabView(selection: $selectedtab) {
+            NavigationStack {
+                MovieSearchView()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                showProfile = true
+                            }) {
+                                Image(systemName: "person.circle.fill")
+                                    .font(.title2)
+                            }
+                        }
+                    }
             }
-            
-            if let roomId = roomManager.currentRoomId {
-                VStack(spacing: 8) {
-                    Text("Код вашей комнаты:")
-                        .foregroundStyle(.secondary)
-                    
-                    Text(roomId)
-                        .font(.title)
-                        .fontWeight(.heavy)
-                        .foregroundStyle(.blue)
-                        .padding()
-                        .background(Color.blue.opacity(0.1))
-                        .cornerRadius(12)
-                }
+            .tabItem {
+                Label("Фильмы", systemImage: "film")
             }
-            
-            Button("Покинуть комнату") {
-                roomManager.leaveRoom()
-            }
-            .foregroundStyle(.red)
-            .padding(.top, 20)
-            
-            Button(action: {
-                authManager.signOut()
-            }) {
-                Text("Выйти из аккаунта")
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.red)
-                    .cornerRadius(12)
-            }
-            .padding(.top, 20)
+            .tag(0)
         }
-        .padding()
+        .tint(.blue)
+        .sheet(isPresented: $showProfile) {
+            ProfileView()
+                .environmentObject(authManager)
+                .environmentObject(roomManager)
+        }
     }
 }
 

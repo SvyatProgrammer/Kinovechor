@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct AuthView: View {
-    @EnvironmentObject var authManager: AuthManager
+    @EnvironmentObject var authManager : AuthManager
+    @EnvironmentObject var roomManager : RoomManager
     
     @State private var email = ""
     @State private var password = ""
@@ -88,9 +89,15 @@ struct AuthView: View {
                                 isLoading = false
                             }
                         } else {
-                            authManager.signIn(email: email, password: password) { _ in
+                            authManager.signIn(email: email, password: password) { success in
                                 // Automatic redirect
-                                isLoading = false
+                                if success {
+                                    roomManager.checkActiveRoom {
+                                        isLoading = false
+                                    }
+                                } else {
+                                    isLoading = false
+                                }
                             }
                         }
                     }) {
