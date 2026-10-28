@@ -5,6 +5,7 @@ import Combine
 class AuthManager: ObservableObject {
     @Published var user: User? = nil
     @Published var isAuthenticated: Bool = false
+    @Published var isUpdatingName : Bool = false
     @Published var errorMessage: String? = nil
 
     // MARK: Observeing when state use is changed
@@ -53,6 +54,32 @@ class AuthManager: ObservableObject {
             try Auth.auth().signOut()
         } catch let error {
             errorMessage = error.localizedDescription
+        }
+    }
+    
+    // MARK: Update profile, username
+    func updateProfile(newName : String, completion : @escaping (Bool) -> Void) {
+        guard let user = Auth.auth().currentUser else {
+            completion(false)
+            return
+        }
+        
+        isUpdatingName = true
+        
+        let changeRequest = user.createProfileChangeRequest()
+        changeRequest.displayName = newName
+        
+        changeRequest.commitChanges { [weak self] error in
+            DispatchQueue.main.async {
+                self?.isUpdatingName = false
+                if let error = error {
+                    print("Ошибка обновления профиля: \(error.localizedDescription)")
+                    completion(false)
+                } else {
+                    self?.user = Auth.auth().currentUser
+                    completion(true)
+                }
+            }
         }
     }
 }

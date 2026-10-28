@@ -15,7 +15,7 @@ struct MovieSearchView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                if tmdbManager.isLoading, (searchQuery.isEmpty ? tmdbManager.popularMovies.isEmpty : tmdbManager.movies.isEmpty) {
+                if tmdbManager.isLoading, (searchQuery.isEmpty ? tmdbManager.isLoadingPopularMovies : tmdbManager.movies.isEmpty) {
                     ProgressView("Ищем фильмы...")
                 } else {
                     ScrollView {
@@ -26,6 +26,7 @@ struct MovieSearchView: View {
                                     .foregroundColor(.secondary)
                                     .padding(.horizontal)
                                     .padding(.top, 8)
+                                
                                 if let error = tmdbManager.errorMessage, tmdbManager.popularMovies.isEmpty {
                                     Text(error)
                                         .foregroundColor(.secondary)

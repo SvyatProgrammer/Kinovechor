@@ -39,10 +39,24 @@ struct MovieRow: View {
                 .cornerRadius(8)
                 
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(movie.title)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                        .lineLimit(2)
+                    HStack {
+                        Text(movie.displayTitle)
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                            .lineLimit(2)
+                        
+                        Spacer()
+                        
+                        if movie.mediaType == "tv" {
+                            Text("Сериал")
+                                .font(.caption2)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.purple.opacity(0.2))
+                                .foregroundColor(.purple)
+                                .cornerRadius(4)
+                        }
+                    }
                     
                     HStack(spacing: 12) {
                         Text(movie.year)

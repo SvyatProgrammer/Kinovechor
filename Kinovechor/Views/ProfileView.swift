@@ -15,6 +15,10 @@ struct ProfileView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    @State private var isEditingName = false
+    @State private var newDisplayName = ""
+    @State private var showSuccessAlert = false
+    
     var body: some View {
         NavigationStack {
             List {
@@ -40,6 +44,22 @@ struct ProfileView: View {
                         }
                     }
                     .padding(.vertical, 8)
+                    
+                    Button(action: {
+                        newDisplayName = authManager.user?.displayName ?? ""
+                        isEditingName = true
+                    }) {
+                        if authManager.isUpdatingName {
+                            HStack(alignment: .center) {
+                                Spacer()
+                                ProgressView()
+                                    .tint(.blue)
+                                Spacer()
+                            }
+                        } else {
+                            Label("Измененить имя профиля", systemImage: "pencil")
+                        }
+                    }
                 }
                 
                 Section("Текущая комната") {
@@ -81,6 +101,24 @@ struct ProfileView: View {
                         Label("Выйти из аккаунта", systemImage: "arrow.right.square")
                     }
                 }
+            }
+            .alert("Изменить имя", isPresented: $isEditingName) {
+                TextField("Введите имя", text: $newDisplayName)
+                Button("Отмена", role: .cancel) {}
+                Button("Сохранить") {
+                    authManager.updateProfile(newName: newDisplayName) { success in
+                        if success {
+                            showSuccessAlert = true
+                        }
+                    }
+                }
+            } message: {
+                Text("Введите новое отображаемое имя для вашего профиля")
+            }
+            .alert("Успешно!", isPresented: $showSuccessAlert) {
+                Button("Ок", role: .cancel) {}
+            } message: {
+                Text("Имя профиля успешного обновлено.")
             }
             .navigationTitle("Профиль")
             .navigationBarTitleDisplayMode(.inline)
