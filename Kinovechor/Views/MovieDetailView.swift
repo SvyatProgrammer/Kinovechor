@@ -140,6 +140,21 @@ extension MovieDetailView {
             }
             .font(.subheadline)
             .padding(.top, 2)
+            
+            if !movie.genreNames.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(movie.genreNames, id: \.self) { genreName in
+                            Text(genreName)
+                                .font(.caption)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color(.systemGray5))
+                                .cornerRadius(6)
+                        }
+                    }
+                }
+            }
         }
     }
     

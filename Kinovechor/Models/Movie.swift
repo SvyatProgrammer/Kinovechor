@@ -22,6 +22,8 @@ struct Movie : Codable, Identifiable {
     let firstAirDate : String?
     let voteAverage : Double?
     let mediaType : String?
+    let genreIds : [Int]?
+    let genres : [Genre]?
     
     var displayTitle : String {
         return title ?? name ?? "Без названия"
@@ -40,6 +42,25 @@ struct Movie : Codable, Identifiable {
         return "Н/Д"
     }
     
+    var genreNames : [String] {
+            guard let ids = genreIds else { return [] }
+            return ids.compactMap { genreMap[$0] }
+        }
+    
+    var genreMap : [Int: String] {
+        [
+            28: "Боевик", 12: "Приключения", 16: "Мультфильм", 35: "Комедия",
+            80: "Криминал", 99: "Документальный", 18: "Драма", 10751: "Семейный",
+            14: "Фэнтези", 36: "Исторический", 27: "Ужасы", 10402: "Музыка",
+            9648: "Детектив", 10749: "Мелодрама", 878: "Фантастика", 10770: "ТВ-фильм",
+            53: "Триллер", 10752: "Военный", 37: "Вестерн",
+            // Специфичные для сериалов:
+            10759: "Экшн и Приключения", 10762: "Детский", 10763: "Новости",
+            10764: "Реалити-шоу", 10765: "Фантастика и Фэнтези", 10766: "Мыльная опера",
+            10767: "Ток-шоу", 10768: "Политика и История"
+        ]
+    }
+    
     enum CodingKeys : String, CodingKey {
         case id, title, name, overview
         case posterPath = "poster_path"
@@ -47,6 +68,8 @@ struct Movie : Codable, Identifiable {
         case firstAirDate = "first_air_date"
         case voteAverage = "vote_average"
         case mediaType = "media_type"
+        case genreIds = "genre_ids"
+        case genres
     }
 }
 
@@ -111,4 +134,10 @@ struct Rewiew : Codable, Identifiable {
 
 struct AuthorDetails : Codable {
     let rating : Double?
+}
+
+// MARK: Genre
+struct Genre : Codable, Identifiable {
+    let id : Int
+    let name : String
 }
