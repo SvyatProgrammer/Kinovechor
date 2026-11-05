@@ -15,6 +15,9 @@ class RoomManager : ObservableObject {
     @Published var currentRoomId : String? = nil
     @Published var errorMessage : String? = nil
     @Published var isLoading : Bool = true
+    @Published var currentCreatorId : String? = nil
+    @Published var isChangingRoomPassword : Bool = false
+    @Published var roomMembers : [String] = []
     
     private var ref = Database.database().reference()
     
@@ -51,6 +54,7 @@ class RoomManager : ObservableObject {
                     if let members = roomData["members"] as? [String: Bool], members[currentUserId] == true {
                         DispatchQueue.main.async {
                             self.currentRoomId = roomId
+                            self.currentCreatorId = roomData["creatorId"] as? String
                             self.isInRoom = true
                         }
                     }
@@ -85,6 +89,7 @@ class RoomManager : ObservableObject {
                 }
                 
                 self?.currentRoomId = roomId
+                self?.currentCreatorId = currentUserId
                 self?.isInRoom = true
                 self?.errorMessage = nil
                 completion(true)
@@ -119,6 +124,7 @@ class RoomManager : ObservableObject {
                 if dbPassword == password {
                     self?.ref.child("rooms").child(cleanRoomId).child("members").child(currentUserId).setValue(true)
                     self?.currentRoomId = cleanRoomId
+                    self?.currentCreatorId = roomDict["creatorId"] as? String
                     self?.isInRoom = true
                     self?.errorMessage = nil
                     completion(true)
@@ -175,6 +181,106 @@ class RoomManager : ObservableObject {
     func resetLocalState() {
         self.currentRoomId = nil
         self.isInRoom = false
+        self.currentCreatorId = nil
+        self.roomMembers = []
+    }
+    
+    // MARK: Change room password if you're a creator
+    func updateRoomPassword(newPassword : String, completion : @escaping (Bool) -> Void) {
+        guard let roomId = currentRoomId, let currentUserId = Auth.auth().currentUser?.uid else {
+            completion(false)
+            return
+        }
+        
+        isChangingRoomPassword = true
+        
+        let roomRef = ref.child("rooms").child(roomId)
+        
+        roomRef.child("creatorId").getData() { [weak self] _, snapshot in
+            guard let creatorId = snapshot?.value as? String, creatorId == currentUserId else {
+                DispatchQueue.main.async {
+                    self?.isChangingRoomPassword = false
+                    self?.errorMessage = "Только владелец комнаты может менять пароль"
+                    completion(false)
+                }
+                return
+            }
+            
+            roomRef.updateChildValues(["password": newPassword]) { error, _ in
+                DispatchQueue.main.async {
+                    self?.isChangingRoomPassword = false
+                    if let error = error {
+                        self?.errorMessage = error.localizedDescription
+                        completion(false)
+                    } else {
+                        completion(true)
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: Get member in room
+    func fetchRoomMembers() {
+        guard let roomId = currentRoomId, let currentUserId = Auth.auth().currentUser?.uid else {
+            roomMembers = []
+            return;
+        }
+        
+        ref.child("rooms").child(roomId).child("members").observe(.value) { [weak self] snapshot in
+            guard let self = self else { return }
+            
+            if let membersDict = snapshot.value as? [String: Bool] {
+                DispatchQueue.main.async {
+                    self.roomMembers = Array(membersDict.keys)
+                    
+                    if self.isInRoom, !membersDict.keys.contains(currentUserId) {
+                        self.resetLocalState()
+                        self.errorMessage = "Вас исключили из комнаты"
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.roomMembers = []
+                }
+            }
+        }
+    }
+    
+    // MARK: Kick member from room
+    func kickMember(targetUid : String, completion : @escaping (Bool) -> Void) {
+        guard let roomId = currentRoomId, let currentUserId = Auth.auth().currentUser?.uid else {
+            completion(false)
+            return
+        }
+        
+        guard targetUid != currentUserId else {
+            completion(false)
+            return
+        }
+        
+        let roomRef = ref.child("rooms").child(roomId)
+        
+        roomRef.child("creatorId").getData() { [weak self] _, snapshot in
+            guard let creatorId = snapshot?.value as? String, creatorId == currentUserId else {
+                DispatchQueue.main.async {
+                    self?.errorMessage = "Только владелец комнаты может выгонять участника"
+                    completion(false)
+                }
+                return
+            }
+            
+            roomRef.child("members").child(targetUid).removeValue { error, _ in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        self?.errorMessage = error.localizedDescription
+                        completion(false)
+                    } else {
+                        completion(true)
+                    }
+                }
+            }
+        }
     }
     
 }
