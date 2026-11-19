@@ -71,25 +71,23 @@ extension MovieDetailView {
                 case .empty:
                     Rectangle()
                         .fill(Color(.systemGray6))
-                        .frame(width: 180, height: 270)
                         .overlay(ProgressView())
                 case .success(let image):
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: 180, height: 270)
-                        .cornerRadius(12)
                         .shadow(radius: 8)
                 case .failure(_):
                     Rectangle()
                         .fill(Color(.systemGray6))
-                        .frame(width: 180, height: 270)
                         .overlay(Image(systemName: "film").font(.largeTitle).foregroundColor(.secondary))
                     
                 @unknown default:
                     EmptyView()
                 }
             }
+            .frame(width: 180, height: 270)
+            .cornerRadius(12)
             Spacer()
         }
         .padding(.top, 10)

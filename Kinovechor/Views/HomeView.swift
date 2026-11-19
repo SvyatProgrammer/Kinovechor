@@ -17,6 +17,7 @@ struct HomeView: View {
     
     var body: some View {
         TabView(selection: $selectedtab) {
+            // MARK: Movies search
             NavigationStack {
                 MovieSearchView()
                     .toolbar {
@@ -29,11 +30,51 @@ struct HomeView: View {
                             }
                         }
                     }
+                    .environmentObject(roomManager)
             }
             .tabItem {
                 Label("Фильмы", systemImage: "film")
             }
             .tag(0)
+            
+            // MARK: Main
+            NavigationStack {
+                MainView()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                showProfile = true
+                            }) {
+                                Image(systemName: "person.circle.fill")
+                                    .font(.title2)
+                            }
+                        }
+                    }
+            }
+            .tabItem {
+                Label("Главная", systemImage: "house")
+            }
+            .tag(1)
+            
+            // MARK: Library
+            NavigationStack {
+                LibraryView()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(action: {
+                                showProfile = true
+                            }) {
+                                Image(systemName: "person.circle.fill")
+                                    .font(.title2)
+                            }
+                        }
+                    }
+                    .environmentObject(roomManager)
+            }
+            .tabItem {
+                Label("Фильмотека", systemImage: "book")
+            }
+            .tag(2)
         }
         .tint(.blue)
         .sheet(isPresented: $showProfile) {

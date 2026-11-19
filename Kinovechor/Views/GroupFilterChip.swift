@@ -8,11 +8,24 @@
 import SwiftUI
 
 struct GroupFilterChip: View {
+    let title : String
+    let tint : Color
+    let isSelected : Bool
+    let action : () -> Void
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Capsule().fill(isSelected ? tint : Color(.secondarySystemBackground)))
+                .foregroundStyle(isSelected ? .white : .primary)
+        }
+        .buttonStyle(.plain)
     }
 }
 
 #Preview {
-    GroupFilterChip()
+    GroupFilterChip(title: "Marvel", tint: .red, isSelected: true, action: { })
 }

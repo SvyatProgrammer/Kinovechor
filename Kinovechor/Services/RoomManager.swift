@@ -18,6 +18,9 @@ class RoomManager : ObservableObject {
     @Published var currentCreatorId : String? = nil
     @Published var isChangingRoomPassword : Bool = false
     @Published var roomMembers : [String] = []
+    @Published var roomLibraryItems : [LibraryItem] = []
+    @Published var isUpdateLibraryItem : Bool = false
+    @Published var isFetchRoomLibrary : Bool = false
     
     private var ref = Database.database().reference()
     
@@ -279,6 +282,87 @@ class RoomManager : ObservableObject {
                         completion(true)
                     }
                 }
+            }
+        }
+    }
+    
+    // MARK: Add to library
+    func saveItemToLibrary(item : LibraryItem, completion : @escaping(Bool) -> Void) {
+        guard let roomId = currentRoomId else {
+            completion(false)
+            return
+        }
+        
+        let itemRef = ref.child("rooms").child(roomId).child("library").child(String(item.id))
+        let itemDict = item.toDictionary()
+        
+        itemRef.setValue(itemDict) { error, _ in
+            DispatchQueue.main.async {
+                completion(error == nil)
+            }
+        }
+    }
+    
+    // MARK: Remove movie from library
+    func removeItemFromLibrary(itemId : Int, completion : @escaping (Bool) -> Void) {
+        guard let roomId = currentRoomId else {
+            completion(false)
+            return
+        }
+        
+        ref.child("rooms").child(roomId).child("library").child(String(itemId)).removeValue { error, _ in
+            DispatchQueue.main.async {
+                completion(error == nil)
+            }
+        }
+    }
+    
+    // MARK: Update library item
+    func updateLibraryItem(item : LibraryItem, completion : @escaping (Bool) -> Void) {
+        guard let roomId = currentRoomId else {
+            completion(false)
+            return
+        }
+        
+        isUpdateLibraryItem = true
+        
+        let itemRef = ref.child("rooms").child(roomId).child("library").child(String(item.id))
+        let itemDict = item.toDictionary()
+        
+        itemRef.setValue(itemDict) { error, _ in
+            DispatchQueue.main.async {
+                self.isUpdateLibraryItem = false
+                completion(error == nil)
+            }
+        }
+    }
+    
+    // MARK: Listener movie library
+    func fetchRoomLibrary() {
+        guard let roomId = currentRoomId else {
+            roomLibraryItems = []
+            return
+        }
+        
+        isFetchRoomLibrary = true
+        
+        ref.child("rooms").child(roomId).child("library").observe(.value) { [weak self] snapshot in
+            guard let self = self else { return }
+            
+            var loadedItems : [LibraryItem] = []
+            
+            for child in snapshot.children {
+                if let snap = child as? DataSnapshot,
+                   let dict = snap.value as? [String: Any],
+                   let data = try? JSONSerialization.data(withJSONObject: dict),
+                   let movie = try? JSONDecoder().decode(LibraryItem.self, from: data) {
+                    loadedItems.append(movie)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.isFetchRoomLibrary = false
+                self.roomLibraryItems = loadedItems
             }
         }
     }

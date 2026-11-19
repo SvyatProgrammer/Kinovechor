@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct MovieSearchView: View {
+    @EnvironmentObject var roomManager: RoomManager
     @StateObject private var tmdbManager = TMDBManager()
     @State private var searchQuery : String = ""
     @State private var selectedMovie : Movie? = nil
+    @State private var movieToAddToLibrary : Movie? = nil
     
     var body: some View {
         NavigationStack {
@@ -18,47 +20,56 @@ struct MovieSearchView: View {
                 if tmdbManager.isLoading, (searchQuery.isEmpty ? tmdbManager.isLoadingPopularMovies : tmdbManager.movies.isEmpty) {
                     ProgressView("Ищем фильмы...")
                 } else {
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 12) {
-                            if searchQuery.isEmpty {
-                                Text("🔥 Сегодня в тренде")
-                                    .font(.headline)
+                    List {
+                        if searchQuery.isEmpty {
+                            if let error = tmdbManager.errorMessage, tmdbManager.popularMovies.isEmpty {
+                                Text(error)
                                     .foregroundColor(.secondary)
-                                    .padding(.horizontal)
-                                    .padding(.top, 8)
-                                
-                                if let error = tmdbManager.errorMessage, tmdbManager.popularMovies.isEmpty {
-                                    Text(error)
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
-                                        .frame(maxWidth: .infinity, minHeight: 300)
-                                } else {
-                                    ForEach(tmdbManager.popularMovies) { movie in
-                                        MovieRow(movie: movie) {
-                                            selectedMovie = movie
-                                        }
-                                    }
-                                    .padding(.horizontal)
-                                }
+                                    .multilineTextAlignment(.center)
+                                    .frame(maxWidth: .infinity, minHeight: 300)
                             } else {
-                                if let error = tmdbManager.errorMessage, tmdbManager.movies.isEmpty {
-                                    Text(error)
-                                        .foregroundColor(.secondary)
-                                        .multilineTextAlignment(.center)
-                                        .frame(maxWidth: .infinity, minHeight: 300)
-                                }
-                                else {
-                                    ForEach(tmdbManager.movies) { movie in
-                                        MovieRow(movie: movie) {
-                                            selectedMovie = movie
+                                ForEach(tmdbManager.popularMovies) { movie in
+                                    MovieRow(movie: movie) {
+                                        selectedMovie = movie
+                                    }
+                                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                        if roomManager.currentRoomId != nil {
+                                            Button {
+                                                movieToAddToLibrary = movie
+                                            } label: {
+                                                Label("В комнату", systemImage: "plus.circle.fill")
+                                            }
+                                            .tint(.green)
                                         }
                                     }
-                                    .padding(.horizontal)
+                                }
+                            }
+                        } else {
+                            if let error = tmdbManager.errorMessage, tmdbManager.movies.isEmpty {
+                                Text(error)
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .frame(maxWidth: .infinity, minHeight: 300)
+                            } else {
+                                ForEach(tmdbManager.movies) { movie in
+                                    MovieRow(movie: movie) {
+                                        selectedMovie = movie
+                                    }
+                                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                        if roomManager.currentRoomId != nil {
+                                            Button {
+                                                movieToAddToLibrary = movie
+                                            } label: {
+                                                Label("В комнату", systemImage: "plus.circle.fill")
+                                            }
+                                            .tint(.green)
+                                        }
+                                    }
                                 }
                             }
                         }
-                        .padding(.vertical)
                     }
+                    .listStyle(.plain)
                 }
             }
             .navigationTitle("Поиск фильма")
@@ -69,10 +80,14 @@ struct MovieSearchView: View {
             .sheet(item: $selectedMovie) { movie in
                 MovieDetailView(movie: movie)
             }
+            .sheet(item: $movieToAddToLibrary) { movie in
+                AddLibraryItemView(movie: movie)
+            }
         }
     }
 }
 
 #Preview {
     MovieSearchView()
+        .environmentObject(RoomManager())
 }
