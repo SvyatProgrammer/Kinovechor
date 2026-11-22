@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EditLibraryItemView: View {
+struct EditLibraryItemSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var roomManager : RoomManager
     
@@ -237,6 +237,6 @@ struct EditLibraryItemView: View {
 }
 
 #Preview {
-    EditLibraryItemView(item: LibraryItem(id: 1, title: "Test", posterPath: "", mediaType: "tv", year: "2027", voteAverage: 7.7, genreIds: [12], overview: "Some overview", status: WatchStatus.planned.id, group: GroupType.marvel.id, comment: "Some comment"))
+    EditLibraryItemSheetView(item: LibraryItem(id: 1, title: "Test", posterPath: "", mediaType: "tv", year: "2027", voteAverage: 7.7, genreIds: [12], overview: "Some overview", status: WatchStatus.planned.id, group: GroupType.marvel.id, comment: "Some comment"))
         .environmentObject(RoomManager())
 }

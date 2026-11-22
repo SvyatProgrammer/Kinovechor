@@ -95,7 +95,7 @@ struct LibraryDetailView: View {
                 ReviewDetailView(review: review)
             }
             .sheet(isPresented: $isEditing) {
-                EditLibraryItemView(item: item)
+                EditLibraryItemSheetView(item: item)
             }
         }
     }

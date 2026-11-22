@@ -11,12 +11,34 @@ struct LibraryView: View {
     @EnvironmentObject var roomManager : RoomManager
     
     @State private var selectedGroup : GroupType? = nil
+    @State private var showFilterSheet = false
+    
+    // Filter params
+    @State private var selectedStatus : WatchStatus? = nil
+    @State private var selectedYear : String? = nil
+    @State private var selectedMediaType : String? = nil
+    @State private var selectedGenreId : Int? = nil
+    @State private var minVoteText = ""
+    @State private var maxVoteText = ""
+    @State private var minRatingText = ""
+    @State private var maxRatingText = ""
     
     private var filtredItems : [LibraryItem] {
         guard let selectedGroup else {
             return roomManager.roomLibraryItems
         }
         return roomManager.roomLibraryItems.filter { $0.group == selectedGroup.id }
+    }
+    
+    private var hasActiveFilters : Bool {
+        selectedStatus != nil ||
+        selectedYear != nil ||
+        selectedMediaType != nil ||
+        selectedGenreId != nil ||
+        !minVoteText.isEmpty ||
+        !maxVoteText.isEmpty ||
+        !minRatingText.isEmpty ||
+        !maxRatingText.isEmpty
     }
     
     var body: some View {
@@ -74,6 +96,22 @@ struct LibraryView: View {
     private var groupFiltedBar : some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
+                Button(action: {
+                    showFilterSheet = true
+                }) {
+                    HStack(spacing: 8) {
+                        Image(systemName: hasActiveFilters ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+                        Text("Фильтры")
+                    }
+                    .font(.subheadline)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Capsule()
+                        .fill(hasActiveFilters ? Color.accentColor : Color(.secondarySystemBackground)))
+                    .foregroundStyle(hasActiveFilters ? Color.white : Color.primary)
+                }
+                .buttonStyle(.plain)
+                
                 GroupFilterChip(title: "Все", tint: .accentColor, isSelected: selectedGroup == nil) {
                     selectedGroup = nil
                 }
