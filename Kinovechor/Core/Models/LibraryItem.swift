@@ -56,6 +56,16 @@ enum GroupType : String, Codable, CaseIterable, Identifiable {
     }
 }
 
+enum SortOption : String, CaseIterable, Identifiable {
+    var id : String { self.rawValue }
+    
+    case defaultOrder = "По умолчанию"
+    case titleAsc = "А-Я"
+    case titleDesc = "Я-А"
+    case tmdbRating = "По рейтингу"
+    case roomRating = "По рейтингу комнаты"
+}
+
 struct LibraryItem : Codable, Identifiable {
     let id : Int
     let title : String
